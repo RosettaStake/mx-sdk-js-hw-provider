@@ -40,8 +40,7 @@ export class HWProvider {
             // @ts-ignore
             return await TransportNode.create();
         }
-
-        return await TransportU2f.create();
+        throw Error('This package only supports nodejs environment');
     }
 
     /**
