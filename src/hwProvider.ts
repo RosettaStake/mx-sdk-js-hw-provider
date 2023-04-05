@@ -1,9 +1,7 @@
-import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
-import TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import TransportU2f from "@ledgerhq/hw-transport-u2f";
+import TransportNode from "@ledgerhq/hw-transport-node-hid";
 import LedgerApp from "./ledgerApp";
 
-import platform from "platform";
 import Transport from "@ledgerhq/hw-transport";
 
 import { IHWWalletApp, ISignature, ITransaction, ISignableMessage } from "./interface";
@@ -37,18 +35,10 @@ export class HWProvider {
     }
 
     async getTransport(): Promise<Transport> {
-        let webUSBSupported = await TransportWebUSB.isSupported();
-        webUSBSupported =
-          webUSBSupported &&
-            platform.name !== "Opera";
-
-        if (webUSBSupported) {
-            return await TransportWebUSB.create();
-        }
-
-        let webHIDSupported = await TransportWebHID.isSupported();
-        if (webHIDSupported) {
-            return await TransportWebHID.open("");
+        let nodeHIDSupported = await TransportNode.isSupported();
+        if (nodeHIDSupported) {
+            // @ts-ignore
+            return await TransportNode.create();
         }
 
         return await TransportU2f.create();
